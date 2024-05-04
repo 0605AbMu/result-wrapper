@@ -26,7 +26,5 @@ jobs:
       run: dotnet build --no-restore
     - name: Pack
       run: dotnet pack src/ResultWrapper.Library/ResultWrapper.Library.csproj -c Release
-    - name: Prep Nuget
-      run: dotnet nuget add source --username 0605AbMu --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/0605AbMu/index.json"
-    - name: Publish to Github Repo
-      run: dotnet nuget push src/ResultWrapper.Library/bin/Release/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }}  --source "github"
+    - name: Publish to Nuget Repo
+      run: dotnet nuget push src/ResultWrapper.Library/bin/Release/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
