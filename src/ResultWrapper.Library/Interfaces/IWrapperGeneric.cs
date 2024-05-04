@@ -1,0 +1,36 @@
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ModelError = ResultWrapper.Library.Common.ModelError;
+
+namespace ResultWrapper.Library.Interfaces;
+
+/// <summary>
+/// A generic interface that wrapper implements its properties
+/// </summary>
+/// <typeparam name="T">The Type of Result</typeparam>
+public interface IWrapperGeneric<T>
+{
+    /// <summary>
+    /// Response result code
+    /// </summary>
+    HttpStatusCode Code { get; init; }
+    /// <summary>
+    /// Result data
+    /// </summary>
+    T? Content { get; init; }
+    /// <summary>
+    /// Result as exception message when any exception encountered
+    /// Else is null
+    /// </summary>
+    string? Error { get; init; }
+    /// <summary>
+    /// If result is a collection it is total items of resource else is null
+    /// </summary>
+    int? Total { get; set; }
+    /// <summary>
+    /// It is model binding errors
+    /// </summary>
+    List<ModelError>? ModelStateError { get; init; }
+    string? StackTrace { get; init; }
+}
