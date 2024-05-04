@@ -5,6 +5,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <NeutralLanguage>en</NeutralLanguage>
+        <Title>ResultWrapper</Title>
+        <Description>A Simple Result wrapper for ASP.NET API projects</Description>
+        <PackageProjectUrl>https://github.com/0605AbMu/result-wrapper</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/0605AbMu/result-wrapper?tab=Unlicense-1-ov-file</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/0605AbMu/result-wrapper</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
