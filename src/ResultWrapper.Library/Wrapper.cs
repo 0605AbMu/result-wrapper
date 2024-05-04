@@ -131,7 +131,7 @@ public class WrapperGeneric<T> : IWrapperGeneric<T>
             .Select(x => new ModelError
             {
                 Key = x.Key,
-                ErrorMessage = x.Value?.Errors?.FirstOrDefault()?.ErrorMessage
+                ErrorMessage = x.Value?.Errors.FirstOrDefault()?.ErrorMessage
             }).ToList();
 
         var errorResponse = new WrapperGeneric<T>(exception);
