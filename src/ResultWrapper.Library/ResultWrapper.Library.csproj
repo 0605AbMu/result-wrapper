@@ -10,6 +10,8 @@
         <PackageProjectUrl>https://github.com/0605AbMu/result-wrapper</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/0605AbMu/result-wrapper?tab=Unlicense-1-ov-file</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/0605AbMu/result-wrapper</RepositoryUrl>
+        <Version>1.0.1</Version>
+        <Authors>@0605AbMu</Authors>
     </PropertyGroup>
 
     <ItemGroup>
