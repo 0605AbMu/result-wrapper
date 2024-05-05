@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultWrapper.Library", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{329417B5-F3AE-4338-9C63-C9244893F0B6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DEA46995-908F-4867-9125-CA4FAC57E210}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultWrapper.Test", "src\tests\ResultWrapper.Test\ResultWrapper.Test.csproj", "{E22123C1-324E-425B-9C8C-B43C95FF2087}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,5 +18,12 @@ Global
 		{355F6A06-9E6D-43DB-9DCF-54708D94AC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{355F6A06-9E6D-43DB-9DCF-54708D94AC7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{355F6A06-9E6D-43DB-9DCF-54708D94AC7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E22123C1-324E-425B-9C8C-B43C95FF2087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E22123C1-324E-425B-9C8C-B43C95FF2087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E22123C1-324E-425B-9C8C-B43C95FF2087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E22123C1-324E-425B-9C8C-B43C95FF2087}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E22123C1-324E-425B-9C8C-B43C95FF2087} = {DEA46995-908F-4867-9125-CA4FAC57E210}
 	EndGlobalSection
 EndGlobal
