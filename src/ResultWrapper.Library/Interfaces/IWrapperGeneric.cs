@@ -12,6 +12,10 @@ namespace ResultWrapper.Library.Interfaces;
 public interface IWrapperGeneric<T>
 {
     /// <summary>
+    /// Result id that is auto generated
+    /// </summary>
+    public Guid Id { get; set; }
+    /// <summary>
     /// Response result code
     /// </summary>
     HttpStatusCode Code { get; init; }

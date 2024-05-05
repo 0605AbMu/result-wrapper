@@ -103,11 +103,12 @@ public class Wrapper : WrapperGeneric<object>, IWrapper
 
 public class WrapperGeneric<T> : IWrapperGeneric<T>
 {
-    [JsonInclude] public Guid Id = Guid.NewGuid();
+    [JsonInclude] public Guid Id { get; set; } = Guid.NewGuid();
 
     public WrapperGeneric(Exception? exception, HttpStatusCode code = HttpStatusCode.InternalServerError)
     {
         Code = code;
+        Error = exception?.Message;
         StackTrace = exception?.StackTrace;
     }
 
@@ -139,7 +140,6 @@ public class WrapperGeneric<T> : IWrapperGeneric<T>
         StackTrace = errorResponse.StackTrace;
     }
 
-
     public HttpStatusCode Code { get; init; } = HttpStatusCode.OK;
     public T? Content { get; init; }
     public string? Error { get; init; }
@@ -154,7 +154,7 @@ public class WrapperGeneric<T> : IWrapperGeneric<T>
         return new WrapperGeneric<T>(exception, statusCode);
     }
 
-    public static WrapperGeneric<T> ResultFromModelState(ModelStateDictionary modelState,
+    public static IWrapperGeneric<T> ResultFromModelState(ModelStateDictionary modelState,
         Exception? exception = null)
     {
         return new WrapperGeneric<T>(modelState, exception);
