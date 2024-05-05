@@ -24,6 +24,8 @@ jobs:
     #   run: dotnet restore
     # - name: Build
     #   run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test src/tests/ResultWrapper.Test/ResultWrapper.Test.csproj
     - name: Pack
       run: dotnet pack src/ResultWrapper.Library/ResultWrapper.Library.csproj -c Release
     - name: Publish to Nuget Repo
