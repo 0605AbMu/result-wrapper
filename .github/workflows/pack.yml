@@ -10,23 +10,46 @@ on:
 permissions: read-all
 
 jobs:
-  build:
+  
+  Build:
 
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
-    # - name: Restore dependencies
-    #   run: dotnet restore
-    # - name: Build
-    #   run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test src/tests/ResultWrapper.Test/ResultWrapper.Test.csproj
-    - name: Pack
-      run: dotnet pack src/ResultWrapper.Library/ResultWrapper.Library.csproj -c Release
-    - name: Publish to Nuget Repo
-      run: dotnet nuget push src/ResultWrapper.Library/bin/Release/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+      - name: build
+        run: dotnet build --no-restore
+  
+  Test:
+
+    runs-on: ubuntu-latest
+    needs: 
+      - Build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+      - name: Test
+        run: dotnet test src/tests/ResultWrapper.Test/ResultWrapper.Test.csproj
+  
+  Package:
+
+    runs-on: ubuntu-latest
+    needs: 
+      - Test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+      - name: Pack
+        run: dotnet pack src/ResultWrapper.Library/ResultWrapper.Library.csproj -c Release
+      - name: Publish to Nuget Repo
+        run: dotnet nuget push src/ResultWrapper.Library/bin/Release/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
