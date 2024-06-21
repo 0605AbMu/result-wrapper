@@ -8,6 +8,10 @@ namespace ResultWrapper.Library;
 
 public class Wrapper : WrapperGeneric<object>, IWrapper
 {
+    public Wrapper() : base()
+    {
+    }
+
     public Wrapper(Exception? exception, HttpStatusCode code = HttpStatusCode.InternalServerError) : base(
         exception, code)
     {
@@ -103,7 +107,11 @@ public class Wrapper : WrapperGeneric<object>, IWrapper
 
 public class WrapperGeneric<T> : IWrapperGeneric<T>
 {
-    [JsonInclude] public Guid Id { get; set; } = Guid.NewGuid();
+    [JsonInclude, JsonPropertyName("id")] public Guid Id { get; set; } = Guid.NewGuid();
+
+    public WrapperGeneric()
+    {
+    }
 
     public WrapperGeneric(Exception? exception, HttpStatusCode code = HttpStatusCode.InternalServerError)
     {
@@ -140,11 +148,11 @@ public class WrapperGeneric<T> : IWrapperGeneric<T>
         StackTrace = errorResponse.StackTrace;
     }
 
-    public HttpStatusCode Code { get; init; } = HttpStatusCode.OK;
-    public T? Content { get; init; }
-    public string? Error { get; init; }
-    public int? Total { get; set; }
-    public List<ModelError>? ModelStateError { get; init; }
+    [JsonPropertyName("code")] public HttpStatusCode Code { get; init; } = HttpStatusCode.OK;
+    [JsonPropertyName("content")] public T? Content { get; init; }
+    [JsonPropertyName("error")] public string? Error { get; init; }
+    [JsonPropertyName("total")] public int? Total { get; set; }
+    [JsonPropertyName("modelStateError")] public List<ModelError>? ModelStateError { get; init; }
     [JsonIgnore] public string? StackTrace { get; init; }
 
 

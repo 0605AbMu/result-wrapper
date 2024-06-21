@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ResultWrapper.Library;
 using ResultWrapper.Library.Interfaces;
@@ -115,4 +116,67 @@ public class ResultWrapperTest
         Assert.That(stateError.Key, Is.EqualTo("username"));
         Assert.That(stateError.ErrorMessage, Is.EqualTo("Min length must be 4"));
     }
+
+    [Test]
+    [TestCase(@"{
+    ""id"": ""463fadea-066e-4950-a733-5bc789a9ea94"",
+    ""code"": 200,
+    ""content"": {
+        ""name"": {
+            ""uz"": ""Test uz"",
+            ""ru"": ""Test Ru"",
+            ""eng"": ""Test eng"",
+            ""cyrl"": ""Test cyrl""
+        },
+        ""thumb"": """",
+        ""groupName"": null,
+        ""isSystemDefined"": false,
+        ""id"": 0
+    },
+    ""error"": null,
+    ""total"": null,
+    ""modelStateError"": null
+}")]
+    public void Wrapper_MustBe_Deserializable(string rawData)
+    {
+        var wrapper = JsonSerializer.Deserialize<Wrapper>(rawData);
+        
+        Assert.IsNotNull(wrapper);
+        Assert.IsNotNull(wrapper.Content);
+        Assert.That(wrapper.Code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.IsNull(wrapper.Error);
+        Assert.That(wrapper.Id, Is.EqualTo(Guid.Parse("463fadea-066e-4950-a733-5bc789a9ea94")));
+    }
+    
+    [Test]
+    [TestCase(@"{
+    ""id"": ""463fadea-066e-4950-a733-5bc789a9ea94"",
+    ""code"": 200,
+    ""content"": {
+        ""name"": {
+            ""uz"": ""Test uz"",
+            ""ru"": ""Test Ru"",
+            ""eng"": ""Test eng"",
+            ""cyrl"": ""Test cyrl""
+        },
+        ""thumb"": """",
+        ""groupName"": null,
+        ""isSystemDefined"": false,
+        ""id"": 0
+    },
+    ""error"": null,
+    ""total"": null,
+    ""modelStateError"": null
+}")]
+    public void WrapperGeneric_MustBe_Deserializable(string rawData)
+    {
+        var wrapper = JsonSerializer.Deserialize<Wrapper>(rawData);
+        
+        Assert.IsNotNull(wrapper);
+        Assert.IsNotNull(wrapper.Content);
+        Assert.That(wrapper.Code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.IsNull(wrapper.Error);
+        Assert.That(wrapper.Id, Is.EqualTo(Guid.Parse("463fadea-066e-4950-a733-5bc789a9ea94")));
+    }
+    
 }
