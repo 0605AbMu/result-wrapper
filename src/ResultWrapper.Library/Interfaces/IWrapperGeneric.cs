@@ -15,26 +15,37 @@ public interface IWrapperGeneric<T>
     /// Result id that is auto generated
     /// </summary>
     public Guid Id { get; set; }
+
     /// <summary>
     /// Response result code
     /// </summary>
     HttpStatusCode Code { get; init; }
+
     /// <summary>
     /// Result data
     /// </summary>
     T? Content { get; init; }
+
     /// <summary>
     /// Result as exception message when any exception encountered
     /// Else is null
     /// </summary>
     string? Error { get; init; }
+
     /// <summary>
     /// If result is a collection it is total items of resource else is null
     /// </summary>
     int? Total { get; set; }
+
+    /// <summary>
+    /// Data query from request
+    /// </summary>
+    object? Query { get; set; }
+
     /// <summary>
     /// It is model binding errors
     /// </summary>
     List<ModelError>? ModelStateError { get; init; }
+
     string? StackTrace { get; init; }
 }

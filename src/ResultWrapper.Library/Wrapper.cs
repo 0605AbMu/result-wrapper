@@ -36,6 +36,15 @@ public class Wrapper : WrapperGeneric<object>, IWrapper
         Code = code;
         Total = total;
     }
+    
+    public Wrapper(IEnumerable<object> content, int total, object? query, HttpStatusCode code = HttpStatusCode.OK) :
+        base(code)
+    {
+        Content = content;
+        Code = code;
+        Total = total;
+        Query = query;
+    }
 
     public Wrapper(string message, HttpStatusCode code = HttpStatusCode.OK) : base(message, code)
     {
@@ -67,10 +76,20 @@ public class Wrapper : WrapperGeneric<object>, IWrapper
     {
         return new Wrapper(data.items, data.total);
     }
+    
+    public static implicit operator Wrapper((IEnumerable<object> items, int total, object? query) data)
+    {
+        return new Wrapper(data.items, data.total, data.query);
+    }
 
     public static implicit operator Wrapper((IEnumerable<IComparable> items, int total) data)
     {
         return new Wrapper(data.items, data.total);
+    }
+    
+    public static implicit operator Wrapper((IEnumerable<IComparable> items, int total, object? query) data)
+    {
+        return new Wrapper(data.items, data.total, data.query);
     }
 
     public static implicit operator Wrapper((IEnumerable<object> items, int total, int statusCode) data)
@@ -152,6 +171,7 @@ public class WrapperGeneric<T> : IWrapperGeneric<T>
     [JsonPropertyName("content")] public T? Content { get; init; }
     [JsonPropertyName("error")] public string? Error { get; init; }
     [JsonPropertyName("total")] public int? Total { get; set; }
+    public object? Query { get; set; }
     [JsonPropertyName("modelStateError")] public List<ModelError>? ModelStateError { get; init; }
     [JsonIgnore] public string? StackTrace { get; init; }
 
