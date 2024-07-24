@@ -33,11 +33,6 @@ public interface IWrapperGeneric<T>
     string? Error { get; init; }
 
     /// <summary>
-    /// If result is a collection it is total items of resource else is null
-    /// </summary>
-    int? Total { get; set; }
-
-    /// <summary>
     /// Data query from request
     /// </summary>
     object? Query { get; set; }
