@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <NeutralLanguage>en</NeutralLanguage>
@@ -10,7 +10,7 @@
         <PackageProjectUrl>https://github.com/0605AbMu/result-wrapper</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/0605AbMu/result-wrapper?tab=Unlicense-1-ov-file</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/0605AbMu/result-wrapper</RepositoryUrl>
-        <Version>1.2.1</Version>
+        <Version>8.0.0</Version>
         <Authors>@0605AbMu</Authors>
     </PropertyGroup>
 
