@@ -36,7 +36,7 @@ public class Wrapper : WrapperGeneric<object>, IWrapper
         Code = code;
         Total = total;
     }
-    
+
     public Wrapper(IEnumerable<object> content, int total, object? query, HttpStatusCode code = HttpStatusCode.OK) :
         base(code)
     {
@@ -76,7 +76,7 @@ public class Wrapper : WrapperGeneric<object>, IWrapper
     {
         return new Wrapper(data.items, data.total);
     }
-    
+
     public static implicit operator Wrapper((IEnumerable<object> items, int total, object? query) data)
     {
         return new Wrapper(data.items, data.total, data.query);
@@ -86,7 +86,7 @@ public class Wrapper : WrapperGeneric<object>, IWrapper
     {
         return new Wrapper(data.items, data.total);
     }
-    
+
     public static implicit operator Wrapper((IEnumerable<IComparable> items, int total, object? query) data)
     {
         return new Wrapper(data.items, data.total, data.query);
@@ -167,7 +167,16 @@ public class WrapperGeneric<T> : IWrapperGeneric<T>
         StackTrace = errorResponse.StackTrace;
     }
 
-    [JsonPropertyName("code")] public HttpStatusCode Code { get; init; } = HttpStatusCode.OK;
+    [JsonInclude, JsonPropertyName("code")]
+    public int _code = (int)HttpStatusCode.OK;
+
+    [JsonIgnore]
+    public HttpStatusCode Code
+    {
+        get => (HttpStatusCode)_code;
+        init => _code = (int)value;
+    }
+
     [JsonPropertyName("content")] public T? Content { get; init; }
     [JsonPropertyName("error")] public string? Error { get; init; }
     [JsonPropertyName("total")] public int? Total { get; set; }
