@@ -168,7 +168,7 @@ public class WrapperGeneric<T> : IWrapperGeneric<T>
     }
 
     [JsonInclude, JsonPropertyName("code")]
-    public int _code = (int)HttpStatusCode.OK;
+    private int _code = (int)HttpStatusCode.OK;
 
     [JsonIgnore]
     public HttpStatusCode Code
