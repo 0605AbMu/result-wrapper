@@ -5,16 +5,12 @@ using ResultWrapper.Library.Interfaces;
 
 namespace ResultWrapper.Library;
 
-public class Wrapper : IWrapper<object?>
+public partial class Wrapper : IWrapper<object?>
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; } = Guid.NewGuid();
-    [JsonPropertyName("code")]
-    public int Code { get; set; }
-    [JsonPropertyName("content")]
-    public object? Content { get; init; }
-    [JsonPropertyName("message")]
-    public string? Message { get; set; }
+    [JsonPropertyName("id")] public Guid Id { get; set; } = Guid.NewGuid();
+    [JsonPropertyName("code")] public int Code { get; set; }
+    [JsonPropertyName("content")] public object? Content { get; init; }
+    [JsonPropertyName("message")] public string? Message { get; set; }
     [JsonIgnore] public string? StackTrace { get; init; }
 
     #region With

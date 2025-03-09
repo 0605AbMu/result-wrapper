@@ -6,7 +6,7 @@ using ModelError = ResultWrapper.Library.Common.ModelError;
 
 namespace ResultWrapper.Library;
 
-public class Wrapper<T> : IWrapper<T>
+public partial class Wrapper<T> : IWrapper<T>
 {
     [JsonPropertyName("id")] public virtual Guid Id { get; set; } = Guid.NewGuid();
 

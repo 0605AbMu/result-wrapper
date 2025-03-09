@@ -37,7 +37,7 @@ public class ResultWrapperTest
     {
         string result = "test";
 
-        var wrapper = Wrapper.FromSuccess(result, 200);
+        Wrapper wrapper = result;
 
         Assert.That(wrapper.Content, Is.EqualTo(result));
         Assert.That(wrapper.Code, Is.EqualTo((int)HttpStatusCode.OK));

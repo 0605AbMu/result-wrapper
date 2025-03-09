@@ -27,7 +27,7 @@ public class ResultWrapperGenericTest
     {
         string result = "test";
 
-        var wrapper = Wrapper<string>.FromSuccess(result);
+        Wrapper<string> wrapper = result;
 
         Assert.That(wrapper.Content, Is.EqualTo(result));
     }
