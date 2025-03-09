@@ -1,224 +1,129 @@
-﻿using System.Net;
+using System.Net;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ResultWrapper.Library.Interfaces;
-using ModelError = ResultWrapper.Library.Common.ModelError;
 
 namespace ResultWrapper.Library;
 
-public class Wrapper : WrapperGeneric<object>, IWrapper
+public class Wrapper : IWrapper<object?>
 {
-    public Wrapper() : base()
+    [JsonPropertyName("id")]
+    public Guid Id { get; set; } = Guid.NewGuid();
+    [JsonPropertyName("code")]
+    public int Code { get; set; }
+    [JsonPropertyName("content")]
+    public object? Content { get; init; }
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
+    [JsonIgnore] public string? StackTrace { get; init; }
+
+    #region With
+
+    public Wrapper WithId(Guid id)
     {
+        this.Id = id;
+        return this;
     }
 
-    public Wrapper(Exception? exception, HttpStatusCode code = HttpStatusCode.InternalServerError) : base(
-        exception, code)
+    public Wrapper WithCode(int code)
     {
+        this.Code = code;
+        return this;
     }
 
-    public Wrapper(object? content, HttpStatusCode code = HttpStatusCode.OK) : base(content, code)
+    public Wrapper WithCode(HttpStatusCode code) => this.WithCode((int)code);
+
+    #endregion
+
+    #region From Exception
+
+    private static Wrapper FromError(string error, int code)
     {
+        return new Wrapper()
+        {
+            Message = error,
+            Code = code
+        };
     }
 
-    public Wrapper(HttpStatusCode code) : base(code)
+    public static Wrapper FromError(Exception exception, int code)
     {
+        return new Wrapper()
+        {
+            Message = exception.Message,
+            Code = code
+        };
     }
 
-    public Wrapper(ModelStateDictionary modelState, Exception? exception = null) : base(modelState, exception)
+    public static Wrapper FromError(Exception exception) =>
+        FromError(exception, (int)HttpStatusCode.InternalServerError);
+
+    public static Wrapper FromError(Exception exception, HttpStatusCode code) =>
+        FromError(exception, (int)code);
+
+    public static Wrapper FromError(string error) => FromError(error, (int)HttpStatusCode.InternalServerError);
+
+    #endregion
+
+    #region From model state error
+
+    public static Wrapper FromModelState(ModelStateDictionary modelState,
+        string? error, int code)
     {
-    }
-
-    public Wrapper(IEnumerable<object> content, int total, HttpStatusCode code = HttpStatusCode.OK) :
-        base(code)
-    {
-        Content = content;
-        Code = code;
-        Total = total;
-    }
-
-    public Wrapper(IEnumerable<object> content, int total, object? query, HttpStatusCode code = HttpStatusCode.OK) :
-        base(code)
-    {
-        Content = content;
-        Code = code;
-        Total = total;
-        Query = query;
-    }
-
-    public Wrapper(string message, HttpStatusCode code = HttpStatusCode.OK) : base(message, code)
-    {
-        Content = message;
-        Code = code;
-    }
-
-    public static implicit operator Wrapper(string s)
-    {
-        return new Wrapper(s);
-    }
-
-    public static Wrapper FromIConvertible(IConvertible s)
-    {
-        return new Wrapper(s);
-    }
-
-    public static implicit operator Wrapper((string content, int statusCode) data)
-    {
-        return new Wrapper(data.content, (HttpStatusCode)data.statusCode);
-    }
-
-    public static implicit operator Wrapper((IConvertible content, int statusCode) data)
-    {
-        return new Wrapper(data.content, (HttpStatusCode)data.statusCode);
-    }
-
-    public static implicit operator Wrapper((IEnumerable<object> items, int total) data)
-    {
-        return new Wrapper(data.items, data.total);
-    }
-
-    public static implicit operator Wrapper((IEnumerable<object> items, int total, object? query) data)
-    {
-        return new Wrapper(data.items, data.total, data.query);
-    }
-
-    public static implicit operator Wrapper((IEnumerable<IComparable> items, int total) data)
-    {
-        return new Wrapper(data.items, data.total);
-    }
-
-    public static implicit operator Wrapper((IEnumerable<IComparable> items, int total, object? query) data)
-    {
-        return new Wrapper(data.items, data.total, data.query);
-    }
-
-    public static implicit operator Wrapper((IEnumerable<object> items, int total, int statusCode) data)
-    {
-        return new Wrapper(data.items, data.total, (HttpStatusCode)data.statusCode);
-    }
-
-    public static implicit operator
-        Wrapper((IEnumerable<IComparable> items, int total, int statusCode) data)
-    {
-        return new Wrapper(data.items, data.total, (HttpStatusCode)data.statusCode);
-    }
-
-    public static implicit operator Wrapper(Exception exception)
-    {
-        return new Wrapper(exception);
-    }
-
-    public static implicit operator Wrapper((Exception exception, int statusCode) data)
-    {
-        return new Wrapper(data.exception, (HttpStatusCode)data.statusCode);
-    }
-
-    public static implicit operator Wrapper((object? content, int statusCode) data)
-    {
-        return new Wrapper(data.content, (HttpStatusCode)data.statusCode);
-    }
-
-    public static implicit operator Wrapper(int statusCode)
-    {
-        return new Wrapper((HttpStatusCode)statusCode);
-    }
-}
-
-public class WrapperGeneric<T> : IWrapperGeneric<T>
-{
-    [JsonInclude, JsonPropertyName("id")] public Guid Id { get; set; } = Guid.NewGuid();
-
-    public WrapperGeneric()
-    {
-    }
-
-    public WrapperGeneric(Exception? exception, HttpStatusCode code = HttpStatusCode.InternalServerError)
-    {
-        Code = code;
-        Error = exception?.Message;
-        StackTrace = exception?.StackTrace;
-    }
-
-    public WrapperGeneric(T? content, HttpStatusCode code = HttpStatusCode.OK)
-    {
-        Content = content;
-        Code = code;
-    }
-
-
-    public WrapperGeneric(HttpStatusCode code)
-    {
-        Code = code;
-    }
-
-    public WrapperGeneric(ModelStateDictionary modelState, Exception? exception = null)
-    {
-        Code = HttpStatusCode.BadRequest;
-        ModelStateError = modelState
-            .Where(x => x.Value?.ValidationState == ModelValidationState.Invalid)
-            .Select(x => new ModelError
+        return new Wrapper()
+        {
+            Code = code,
+            Message = error,
+            Content = modelState.Select(x => new Common.ModelError()
             {
                 Key = x.Key,
                 ErrorMessage = x.Value?.Errors.FirstOrDefault()?.ErrorMessage
-            }).ToList();
-
-        var errorResponse = new WrapperGeneric<T>(exception);
-        Error = errorResponse.Error;
-        StackTrace = errorResponse.StackTrace;
+            }).ToList()
+        };
     }
 
-    [JsonInclude, JsonPropertyName("code")]
-    private int _code = (int)HttpStatusCode.OK;
+    public static Wrapper FromModelState(ModelStateDictionary modelState) =>
+        FromModelState(modelState, null, (int)HttpStatusCode.BadRequest);
 
-    [JsonIgnore]
-    public HttpStatusCode Code
+    public static Wrapper FromModelState(ModelStateDictionary modelState,
+        Exception? exception) => FromModelState(modelState, exception?.Message, (int)HttpStatusCode.BadRequest);
+
+    public static Wrapper FromModelState(ModelStateDictionary modelState,
+        string? error) =>
+        FromModelState(modelState, error, (int)HttpStatusCode.BadRequest);
+
+    #endregion
+
+    #region From success result
+
+    public static Wrapper FromSuccess(object? content, int code)
     {
-        get => (HttpStatusCode)_code;
-        init => _code = (int)value;
+        return new Wrapper()
+        {
+            Content = content,
+            Code = code
+        };
     }
 
-    [JsonPropertyName("content")] public T? Content { get; init; }
-    [JsonPropertyName("error")] public string? Error { get; init; }
-    [JsonPropertyName("total")] public int? Total { get; set; }
-    public object? Query { get; set; }
-    [JsonPropertyName("modelStateError")] public List<ModelError>? ModelStateError { get; init; }
-    [JsonIgnore] public string? StackTrace { get; init; }
+    public static Wrapper FromSuccess(object? content) =>
+        FromSuccess(content, (int)HttpStatusCode.OK);
 
+    public static Wrapper FromSuccess(object? content, HttpStatusCode code) =>
+        FromSuccess(content, (int)code);
 
-    public static WrapperGeneric<T> ResultFromException(Exception exception,
-        HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
+    #endregion
+
+    #region From Status Code
+
+    public static Wrapper FromStatus(int code = 200)
     {
-        return new WrapperGeneric<T>(exception, statusCode);
+        return new Wrapper()
+        {
+            Code = code
+        };
     }
 
-    public static IWrapperGeneric<T> ResultFromModelState(ModelStateDictionary modelState,
-        Exception? exception = null)
-    {
-        return new WrapperGeneric<T>(modelState, exception);
-    }
+    public static Wrapper FromStatus(HttpStatusCode code = HttpStatusCode.OK) => FromStatus((int)code);
 
-    public static WrapperGeneric<T> ResultFromContent(T content, HttpStatusCode statusCode = HttpStatusCode.OK)
-    {
-        return new WrapperGeneric<T>(content, statusCode);
-    }
-
-    public static implicit operator WrapperGeneric<T>(Exception exception)
-    {
-        return new WrapperGeneric<T>(exception);
-    }
-
-    public static implicit operator WrapperGeneric<T>((Exception exception, int statusCode) data)
-    {
-        return new WrapperGeneric<T>(data.exception, (HttpStatusCode)data.statusCode);
-    }
-
-    public static implicit operator WrapperGeneric<T>((T? content, int statusCode) data)
-    {
-        return new WrapperGeneric<T>(data.content, (HttpStatusCode)data.statusCode);
-    }
-
-    public static implicit operator WrapperGeneric<T>(int statusCode)
-    {
-        return new WrapperGeneric<T>((HttpStatusCode)statusCode);
-    }
+    #endregion
 }
