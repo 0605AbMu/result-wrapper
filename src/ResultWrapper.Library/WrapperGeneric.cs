@@ -14,7 +14,6 @@ public partial class Wrapper<T> : IWrapper<T>
 
     [JsonPropertyName("content")] public T? Content { get; init; }
     [JsonPropertyName("message")] public string? Message { get; set; }
-    [JsonIgnore] public string? StackTrace { get; init; }
 
     #region With
 

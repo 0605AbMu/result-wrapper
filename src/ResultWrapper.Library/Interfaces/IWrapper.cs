@@ -26,6 +26,4 @@ public interface IWrapper<T>
     T? Content { get; init; }
 
     public string? Message { get; set; }
-
-    string? StackTrace { get; init; }
 }
