@@ -2,11 +2,11 @@ using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ResultWrapper.Library;
-using ResultWrapper.Library.Interfaces;
+using ModelError = ResultWrapper.Library.Common.ModelError;
 
 namespace ResultWrapper.Test;
 
-public class ResultWrapperTest
+public class ResultWrapperGenericTest
 {
     [SetUp]
     public void Setup()
@@ -16,7 +16,7 @@ public class ResultWrapperTest
     [Test]
     public void Id_ShouldBeNewGuid_WhenAnyResultSet()
     {
-        Wrapper wrapper = ("test", 200);
+        var wrapper = Wrapper<string>.FromSuccess("", HttpStatusCode.OK);
         
         Assert.IsInstanceOf<Guid>(wrapper.Id);
         Assert.That(wrapper.Id, Is.Not.EqualTo(Guid.Empty));
@@ -27,7 +27,7 @@ public class ResultWrapperTest
     {
         string result = "test";
 
-        Wrapper wrapper = result;
+        Wrapper<string> wrapper = result;
 
         Assert.That(wrapper.Content, Is.EqualTo(result));
     }
@@ -37,10 +37,10 @@ public class ResultWrapperTest
     {
         string result = "test";
 
-        Wrapper wrapper = (result, 200);
+        var wrapper = Wrapper<string>.FromSuccess(result, 200);
 
         Assert.That(wrapper.Content, Is.EqualTo(result));
-        Assert.That(wrapper.Code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(wrapper.Code, Is.EqualTo((int)HttpStatusCode.OK));
     }
 
     [Test]
@@ -49,9 +49,9 @@ public class ResultWrapperTest
         var exceptionMessage = "Test exception";
         var exception = new Exception(exceptionMessage);
 
-        Wrapper wrapper = exception;
+        var wrapper = Wrapper<object>.FromError(exception);
 
-        Assert.NotNull(wrapper.Error);
+        Assert.NotNull(wrapper.Message);
     }
 
     [Test]
@@ -60,7 +60,7 @@ public class ResultWrapperTest
         var exceptionMessage = "Test exception";
         var exception = new Exception(exceptionMessage);
 
-        Wrapper wrapper = exception;
+        var wrapper = Wrapper<object>.FromError(exception);
 
         Assert.Null(wrapper.Content);
     }
@@ -71,9 +71,9 @@ public class ResultWrapperTest
         var exceptionMessage = "Test exception";
         var exception = new Exception(exceptionMessage);
 
-        Wrapper wrapper = exception;
+        var wrapper = Wrapper<object>.FromError(exception);
 
-        Assert.That(wrapper.Error, Is.EqualTo(exceptionMessage));
+        Assert.That(wrapper.Message, Is.EqualTo(exceptionMessage));
     }
 
     [Test]
@@ -84,9 +84,8 @@ public class ResultWrapperTest
     [TestCase(600, 600)]
     public void Code_ShouldBeHttpStatusCode_WhenCodeGives(int code, HttpStatusCode statusCode)
     {
-        Wrapper wrapper = code;
-
-        Assert.That(wrapper.Code, Is.EqualTo(statusCode));
+        var wrapper = Wrapper<object>.FromStatus(code);
+        Assert.That(wrapper.Code, Is.EqualTo((int)statusCode));
     }
 
     [Test]
@@ -95,10 +94,11 @@ public class ResultWrapperTest
         ModelStateDictionary dictionary = new ModelStateDictionary();
         dictionary.AddModelError("username", "Min length must be 4");
 
-        IWrapperGeneric<object> wrapper = Wrapper.ResultFromModelState(dictionary);
+        var wrapper = Wrapper<object>.FromModelState(dictionary);
 
-        Assert.That(wrapper.ModelStateError, Is.Not.Null);
-        Assert.IsNotEmpty(wrapper.ModelStateError!);
+        Assert.That(wrapper.Content, Is.Not.Null);
+        Assert.That(wrapper.Content, Is.AssignableTo(typeof(IReadOnlyCollection<ModelError>)));
+        Assert.IsNotEmpty(wrapper.Content);
     }
 
     [Test]
@@ -107,11 +107,11 @@ public class ResultWrapperTest
         ModelStateDictionary dictionary = new ModelStateDictionary();
         dictionary.AddModelError("username", "Min length must be 4");
 
-        IWrapperGeneric<object> wrapper = Wrapper.ResultFromModelState(dictionary);
+        var wrapper = Wrapper<object>.FromModelState(dictionary);
         
-        Assert.IsNotNull(wrapper.ModelStateError);
+        Assert.IsNotNull(wrapper.Content);
 
-        var stateError = wrapper.ModelStateError![0];
+        var stateError = wrapper.Content!.First();
 
         Assert.That(stateError.Key, Is.EqualTo("username"));
         Assert.That(stateError.ErrorMessage, Is.EqualTo("Min length must be 4"));
@@ -133,18 +133,16 @@ public class ResultWrapperTest
         ""isSystemDefined"": false,
         ""id"": 0
     },
-    ""error"": null,
-    ""total"": null,
-    ""modelStateError"": null
+    ""message"": null
 }")]
     public void Wrapper_MustBe_Deserializable(string rawData)
     {
-        var wrapper = JsonSerializer.Deserialize<Wrapper>(rawData);
+        var wrapper = JsonSerializer.Deserialize<Wrapper<object>>(rawData);
         
         Assert.IsNotNull(wrapper);
         Assert.IsNotNull(wrapper.Content);
-        Assert.That(wrapper.Code, Is.EqualTo(HttpStatusCode.OK));
-        Assert.IsNull(wrapper.Error);
+        Assert.That(wrapper.Code, Is.EqualTo((int)HttpStatusCode.OK));
+        Assert.IsNull(wrapper.Message);
         Assert.That(wrapper.Id, Is.EqualTo(Guid.Parse("463fadea-066e-4950-a733-5bc789a9ea94")));
     }
     
@@ -164,18 +162,16 @@ public class ResultWrapperTest
         ""isSystemDefined"": false,
         ""id"": 0
     },
-    ""error"": null,
-    ""total"": null,
-    ""modelStateError"": null
+    ""message"": null
 }")]
     public void WrapperGeneric_MustBe_Deserializable(string rawData)
     {
-        var wrapper = JsonSerializer.Deserialize<Wrapper>(rawData);
+        var wrapper = JsonSerializer.Deserialize<Wrapper<object>>(rawData);
         
         Assert.IsNotNull(wrapper);
         Assert.IsNotNull(wrapper.Content);
-        Assert.That(wrapper.Code, Is.EqualTo(HttpStatusCode.OK));
-        Assert.IsNull(wrapper.Error);
+        Assert.That(wrapper.Code, Is.EqualTo((int)HttpStatusCode.OK));
+        Assert.IsNull(wrapper.Message);
         Assert.That(wrapper.Id, Is.EqualTo(Guid.Parse("463fadea-066e-4950-a733-5bc789a9ea94")));
     }
     

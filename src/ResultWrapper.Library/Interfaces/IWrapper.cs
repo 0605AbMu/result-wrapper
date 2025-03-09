@@ -1,8 +1,29 @@
+using System.Net;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ModelError = ResultWrapper.Library.Common.ModelError;
+
 namespace ResultWrapper.Library.Interfaces;
 
 /// <summary>
-/// Object typed wrapper interface that object typed wrapper implements it;
+/// A generic interface that wrapper implements its properties
 /// </summary>
-public interface IWrapper : IWrapperGeneric<object>
+/// <typeparam name="T">The Type of Result</typeparam>
+public interface IWrapper<T>
 {
+    /// <summary>
+    /// Result id that is auto generated
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Response result code
+    /// </summary>
+    public int Code { get; protected internal set; }
+
+    /// <summary>
+    /// Result data
+    /// </summary>
+    T? Content { get; init; }
+
+    public string? Message { get; set; }
 }
