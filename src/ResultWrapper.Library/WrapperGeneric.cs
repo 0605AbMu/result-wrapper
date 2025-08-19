@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ResultWrapper.Library.Interfaces;
@@ -8,7 +9,7 @@ namespace ResultWrapper.Library;
 
 public partial class Wrapper<T> : IWrapper<T>
 {
-    [JsonPropertyName("id")] public virtual Guid Id { get; set; } = Guid.NewGuid();
+    [JsonPropertyName("id")] public virtual string? Id { get; set; } = Activity.Current?.Id;
 
     [JsonPropertyName("code")] public int Code { get; set; }
 
@@ -17,7 +18,7 @@ public partial class Wrapper<T> : IWrapper<T>
 
     #region With
 
-    public Wrapper<T> WithId(Guid id)
+    public Wrapper<T> WithId(string id)
     {
         this.Id = id;
         return this;

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -11,15 +12,6 @@ public class ResultWrapperTest
     [SetUp]
     public void Setup()
     {
-    }
-
-    [Test]
-    public void Id_ShouldBeNewGuid_WhenAnyResultSet()
-    {
-        var wrapper = Wrapper.FromSuccess("", HttpStatusCode.OK);
-        
-        Assert.IsInstanceOf<Guid>(wrapper.Id);
-        Assert.That(wrapper.Id, Is.Not.EqualTo(Guid.Empty));
     }
     
     [Test]
@@ -143,7 +135,7 @@ public class ResultWrapperTest
         Assert.IsNotNull(wrapper.Content);
         Assert.That(wrapper.Code, Is.EqualTo((int)HttpStatusCode.OK));
         Assert.IsNull(wrapper.Message);
-        Assert.That(wrapper.Id, Is.EqualTo(Guid.Parse("463fadea-066e-4950-a733-5bc789a9ea94")));
+        Assert.That(wrapper.Id, Is.EqualTo("463fadea-066e-4950-a733-5bc789a9ea94"));
     }
     
     [Test]
@@ -172,7 +164,7 @@ public class ResultWrapperTest
         Assert.IsNotNull(wrapper.Content);
         Assert.That(wrapper.Code, Is.EqualTo((int)HttpStatusCode.OK));
         Assert.IsNull(wrapper.Message);
-        Assert.That(wrapper.Id, Is.EqualTo(Guid.Parse("463fadea-066e-4950-a733-5bc789a9ea94")));
+        Assert.That(wrapper.Id, Is.EqualTo("463fadea-066e-4950-a733-5bc789a9ea94"));
     }
     
 }
