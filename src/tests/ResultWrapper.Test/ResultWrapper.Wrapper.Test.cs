@@ -3,7 +3,6 @@ using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ResultWrapper.Library;
-using ModelError = ResultWrapper.Library.Common.ModelError;
 
 namespace ResultWrapper.Test;
 
@@ -12,6 +11,26 @@ public class ResultWrapperTest
     [SetUp]
     public void Setup()
     {
+    }
+    
+    [Test]
+    public void Id_ShouldBeActivityId_WhenActivityExists()
+    {
+        if (Activity.Current == null)
+            return;
+
+        var wrapper = Wrapper.FromSuccess("", HttpStatusCode.OK);
+
+        Assert.That(wrapper.Id, Is.EqualTo(Activity.Current?.Id));
+    }
+
+    [Test]
+    public void Id_ShouldBeNewGuid_WhenAnyResultSet()
+    {
+        var wrapper = Wrapper.FromSuccess("", HttpStatusCode.OK);
+
+        Assert.NotNull(wrapper.Id);
+        Assert.True(Guid.TryParse(wrapper.Id, out _));
     }
     
     [Test]

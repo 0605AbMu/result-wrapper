@@ -13,7 +13,7 @@ public interface IWrapper<T>
     /// <summary>
     /// Result id that is auto generated
     /// </summary>
-    public string? Id { get; set; }
+    public string Id { get; set; }
 
     /// <summary>
     /// Response result code

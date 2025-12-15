@@ -9,7 +9,7 @@ namespace ResultWrapper.Library;
 
 public partial class Wrapper<T> : IWrapper<T>
 {
-    [JsonPropertyName("id")] public virtual string? Id { get; set; } = Activity.Current?.Id ?? Guid.NewGuid().ToString();
+    [JsonPropertyName("id")] public virtual string Id { get; set; } = Activity.Current?.Id ?? Guid.NewGuid().ToString();
 
     [JsonPropertyName("code")] public int Code { get; set; }
 

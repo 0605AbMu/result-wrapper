@@ -4,6 +4,13 @@ namespace ResultWrapper.Library;
 
 public partial class Wrapper<T>
 {
+    public static implicit operator Wrapper(Wrapper<T> w) => new Wrapper()
+    {
+        Code = w.Code,
+        Message = w.Message,
+        Content = w.Content,
+        Id = w.Id
+    };
     public static implicit operator Wrapper<T>(T data) => FromSuccess(data);
     public static implicit operator Wrapper<T>((T content, int code) data) => FromSuccess(data.content, data.code);
 
