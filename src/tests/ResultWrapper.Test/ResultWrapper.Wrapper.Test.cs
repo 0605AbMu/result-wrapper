@@ -89,8 +89,8 @@ public class ResultWrapperTest
         var wrapper = Wrapper.FromModelState(dictionary);
 
         Assert.That(wrapper.Content, Is.Not.Null);
-        Assert.That(wrapper.Content, Is.AssignableTo(typeof(IReadOnlyCollection<ModelError>)));
-        Assert.IsNotEmpty((IReadOnlyCollection<ModelError>)wrapper.Content);
+        Assert.That(wrapper.Content, Is.AssignableTo(typeof(IReadOnlyDictionary<string, string?>)));
+        Assert.IsNotEmpty((IReadOnlyDictionary<string, string?>)wrapper.Content);
     }
 
     [Test]
@@ -103,10 +103,14 @@ public class ResultWrapperTest
         
         Assert.IsNotNull(wrapper.Content);
 
-        var stateError = ((IReadOnlyCollection<ModelError>)wrapper.Content)!.First();
+        var modelStateDict = ((IReadOnlyDictionary<string, string?>)wrapper.Content)!;
+        
+        Assert.That(modelStateDict.Count, Is.EqualTo(1));
+        
+        var first = modelStateDict.First();
 
-        Assert.That(stateError.Key, Is.EqualTo("username"));
-        Assert.That(stateError.ErrorMessage, Is.EqualTo("Min length must be 4"));
+        Assert.That(first.Key, Is.EqualTo("username"));
+        Assert.That(first.Value, Is.EqualTo("Min length must be 4"));
     }
 
     [Test]

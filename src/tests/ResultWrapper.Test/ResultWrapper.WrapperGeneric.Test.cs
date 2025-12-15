@@ -110,11 +110,12 @@ public class ResultWrapperGenericTest
         var wrapper = Wrapper<object>.FromModelState(dictionary);
         
         Assert.IsNotNull(wrapper.Content);
+        Assert.IsNotEmpty(wrapper.Content);
 
         var stateError = wrapper.Content!.First();
 
         Assert.That(stateError.Key, Is.EqualTo("username"));
-        Assert.That(stateError.ErrorMessage, Is.EqualTo("Min length must be 4"));
+        Assert.That(stateError.Value, Is.EqualTo("Min length must be 4"));
     }
 
     [Test]

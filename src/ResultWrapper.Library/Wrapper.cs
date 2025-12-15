@@ -8,7 +8,7 @@ namespace ResultWrapper.Library;
 
 public partial class Wrapper : IWrapper<object?>
 {
-    [JsonPropertyName("id")] public string? Id { get; set; } = Activity.Current?.Id;
+    [JsonPropertyName("id")] public string? Id { get; set; } = Activity.Current?.Id ?? Guid.NewGuid().ToString();
     [JsonPropertyName("code")] public int Code { get; set; }
     [JsonPropertyName("content")] public object? Content { get; init; }
     [JsonPropertyName("message")] public string? Message { get; set; }
@@ -70,11 +70,7 @@ public partial class Wrapper : IWrapper<object?>
         {
             Code = code,
             Message = error,
-            Content = modelState.Select(x => new Common.ModelError()
-            {
-                Key = x.Key,
-                ErrorMessage = x.Value?.Errors.FirstOrDefault()?.ErrorMessage
-            }).ToList()
+            Content = modelState.ToDictionary(x => x.Key, x => x.Value?.Errors.FirstOrDefault()?.ErrorMessage)
         };
     }
 

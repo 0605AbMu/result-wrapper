@@ -9,7 +9,7 @@ namespace ResultWrapper.Library;
 
 public partial class Wrapper<T> : IWrapper<T>
 {
-    [JsonPropertyName("id")] public virtual string? Id { get; set; } = Activity.Current?.Id;
+    [JsonPropertyName("id")] public virtual string? Id { get; set; } = Activity.Current?.Id ?? Guid.NewGuid().ToString();
 
     [JsonPropertyName("code")] public int Code { get; set; }
 
@@ -66,28 +66,24 @@ public partial class Wrapper<T> : IWrapper<T>
 
     #region From model state error
 
-    public static Wrapper<IReadOnlyCollection<ModelError>> FromModelState(ModelStateDictionary modelState,
+    public static Wrapper<IReadOnlyDictionary<string, string?>> FromModelState(ModelStateDictionary modelState,
         string? error, int code)
     {
-        return new Wrapper<IReadOnlyCollection<ModelError>>()
+        return new Wrapper<IReadOnlyDictionary<string, string?>>()
         {
             Code = code,
             Message = error,
-            Content = modelState.Select(x => new ModelError()
-            {
-                Key = x.Key,
-                ErrorMessage = x.Value?.Errors.FirstOrDefault()?.ErrorMessage
-            }).ToList()
+            Content = modelState.ToDictionary(x => x.Key, x => x.Value?.Errors.FirstOrDefault()?.ErrorMessage)
         };
     }
 
-    public static Wrapper<IReadOnlyCollection<ModelError>> FromModelState(ModelStateDictionary modelState) =>
+    public static Wrapper<IReadOnlyDictionary<string, string?>> FromModelState(ModelStateDictionary modelState) =>
         FromModelState(modelState, null, (int)HttpStatusCode.BadRequest);
 
-    public static Wrapper<IReadOnlyCollection<ModelError>> FromModelState(ModelStateDictionary modelState,
+    public static Wrapper<IReadOnlyDictionary<string, string?>> FromModelState(ModelStateDictionary modelState,
         Exception? exception) => FromModelState(modelState, exception?.Message, (int)HttpStatusCode.BadRequest);
 
-    public static Wrapper<IReadOnlyCollection<ModelError>> FromModelState(ModelStateDictionary modelState,
+    public static Wrapper<IReadOnlyDictionary<string, string?>> FromModelState(ModelStateDictionary modelState,
         string? error) =>
         FromModelState(modelState, error, (int)HttpStatusCode.BadRequest);
 
