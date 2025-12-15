@@ -18,19 +18,19 @@ public partial class Wrapper<T> : IWrapper<T>
 
     #region With
 
-    public Wrapper<T> WithId(string id)
+    public virtual Wrapper<T> WithId(string id)
     {
         this.Id = id;
         return this;
     }
 
-    public Wrapper<T> WithCode(int code)
+    public virtual Wrapper<T> WithCode(int code)
     {
         this.Code = code;
         return this;
     }
 
-    public Wrapper<T> WithCode(HttpStatusCode code) => this.WithCode((int)code);
+    public virtual Wrapper<T> WithCode(HttpStatusCode code) => this.WithCode((int)code);
 
     #endregion
 

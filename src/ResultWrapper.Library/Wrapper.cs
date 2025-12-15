@@ -1,33 +1,25 @@
-using System.Diagnostics;
 using System.Net;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using ResultWrapper.Library.Interfaces;
 
 namespace ResultWrapper.Library;
 
-public partial class Wrapper : IWrapper<object?>
+public partial class Wrapper : Wrapper<object?>
 {
-    [JsonPropertyName("id")] public string? Id { get; set; } = Activity.Current?.Id ?? Guid.NewGuid().ToString();
-    [JsonPropertyName("code")] public int Code { get; set; }
-    [JsonPropertyName("content")] public object? Content { get; init; }
-    [JsonPropertyName("message")] public string? Message { get; set; }
-
     #region With
 
-    public Wrapper WithId(string id)
+    public override Wrapper WithId(string id)
     {
         this.Id = id;
         return this;
     }
 
-    public Wrapper WithCode(int code)
+    public override Wrapper WithCode(int code)
     {
         this.Code = code;
         return this;
     }
 
-    public Wrapper WithCode(HttpStatusCode code) => this.WithCode((int)code);
+    public override Wrapper WithCode(HttpStatusCode code) => this.WithCode((int)code);
 
     #endregion
 
@@ -42,7 +34,7 @@ public partial class Wrapper : IWrapper<object?>
         };
     }
 
-    public static Wrapper FromError(Exception exception, int code)
+    public new static Wrapper FromError(Exception exception, int code)
     {
         return new Wrapper()
         {
@@ -51,22 +43,22 @@ public partial class Wrapper : IWrapper<object?>
         };
     }
 
-    public static Wrapper FromError(Exception exception) =>
+    public new static Wrapper FromError(Exception exception) =>
         FromError(exception, (int)HttpStatusCode.InternalServerError);
 
-    public static Wrapper FromError(Exception exception, HttpStatusCode code) =>
+    public new static Wrapper FromError(Exception exception, HttpStatusCode code) =>
         FromError(exception, (int)code);
 
-    public static Wrapper FromError(string error) => FromError(error, (int)HttpStatusCode.InternalServerError);
+    public new static Wrapper FromError(string error) => FromError(error, (int)HttpStatusCode.InternalServerError);
 
     #endregion
 
     #region From model state error
 
-    public static Wrapper FromModelState(ModelStateDictionary modelState,
+    public new static Wrapper<IReadOnlyDictionary<string, string?>> FromModelState(ModelStateDictionary modelState,
         string? error, int code)
     {
-        return new Wrapper()
+        return new Wrapper<IReadOnlyDictionary<string, string?>>()
         {
             Code = code,
             Message = error,
@@ -74,13 +66,13 @@ public partial class Wrapper : IWrapper<object?>
         };
     }
 
-    public static Wrapper FromModelState(ModelStateDictionary modelState) =>
+    public new static Wrapper<IReadOnlyDictionary<string, string?>> FromModelState(ModelStateDictionary modelState) =>
         FromModelState(modelState, null, (int)HttpStatusCode.BadRequest);
 
-    public static Wrapper FromModelState(ModelStateDictionary modelState,
+    public new static Wrapper<IReadOnlyDictionary<string, string?>> FromModelState(ModelStateDictionary modelState,
         Exception? exception) => FromModelState(modelState, exception?.Message, (int)HttpStatusCode.BadRequest);
 
-    public static Wrapper FromModelState(ModelStateDictionary modelState,
+    public new static Wrapper<IReadOnlyDictionary<string, string?>> FromModelState(ModelStateDictionary modelState,
         string? error) =>
         FromModelState(modelState, error, (int)HttpStatusCode.BadRequest);
 
@@ -88,7 +80,7 @@ public partial class Wrapper : IWrapper<object?>
 
     #region From success result
 
-    public static Wrapper FromSuccess(object? content, int code)
+    public new static Wrapper FromSuccess(object content, int code)
     {
         return new Wrapper()
         {
@@ -97,17 +89,17 @@ public partial class Wrapper : IWrapper<object?>
         };
     }
 
-    public static Wrapper FromSuccess(object? content) =>
+    public new static Wrapper FromSuccess(object content) =>
         FromSuccess(content, (int)HttpStatusCode.OK);
 
-    public static Wrapper FromSuccess(object? content, HttpStatusCode code) =>
+    public new static Wrapper FromSuccess(object content, HttpStatusCode code) =>
         FromSuccess(content, (int)code);
 
     #endregion
 
     #region From Status Code
 
-    public static Wrapper FromStatus(int code = 200)
+    public new static Wrapper FromStatus(int code = 200)
     {
         return new Wrapper()
         {
@@ -115,7 +107,7 @@ public partial class Wrapper : IWrapper<object?>
         };
     }
 
-    public static Wrapper FromStatus(HttpStatusCode code = HttpStatusCode.OK) => FromStatus((int)code);
+    public new static Wrapper FromStatus(HttpStatusCode code = HttpStatusCode.OK) => FromStatus((int)code);
 
     #endregion
 }

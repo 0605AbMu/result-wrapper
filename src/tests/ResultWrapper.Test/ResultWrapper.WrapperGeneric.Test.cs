@@ -15,13 +15,25 @@ public class ResultWrapperGenericTest
     }
 
     [Test]
+    public void Id_ShouldBeActivityId_WhenActivityExists()
+    {
+        if (Activity.Current == null)
+            return;
+
+        var wrapper = Wrapper<string>.FromSuccess("", HttpStatusCode.OK);
+
+        Assert.That(wrapper.Id, Is.EqualTo(Activity.Current?.Id));
+    }
+
+    [Test]
     public void Id_ShouldBeNewGuid_WhenAnyResultSet()
     {
         var wrapper = Wrapper<string>.FromSuccess("", HttpStatusCode.OK);
-        
-        Assert.That(wrapper.Id, Is.EqualTo(Activity.Current?.Id));
+
+        Assert.NotNull(wrapper.Id);
+        Assert.True(Guid.TryParse(wrapper.Id, out _));
     }
-    
+
     [Test]
     public void ResultContent_ShouldBeStringObject_WhenGiveOnlyStringObject()
     {
@@ -97,7 +109,7 @@ public class ResultWrapperGenericTest
         var wrapper = Wrapper<object>.FromModelState(dictionary);
 
         Assert.That(wrapper.Content, Is.Not.Null);
-        Assert.That(wrapper.Content, Is.AssignableTo(typeof(IReadOnlyCollection<ModelError>)));
+        Assert.That(wrapper.Content, Is.AssignableTo(typeof(IReadOnlyDictionary<string, string>)));
         Assert.IsNotEmpty(wrapper.Content);
     }
 
@@ -108,7 +120,7 @@ public class ResultWrapperGenericTest
         dictionary.AddModelError("username", "Min length must be 4");
 
         var wrapper = Wrapper<object>.FromModelState(dictionary);
-        
+
         Assert.IsNotNull(wrapper.Content);
         Assert.IsNotEmpty(wrapper.Content);
 
@@ -139,14 +151,14 @@ public class ResultWrapperGenericTest
     public void Wrapper_MustBe_Deserializable(string rawData)
     {
         var wrapper = JsonSerializer.Deserialize<Wrapper<object>>(rawData);
-        
+
         Assert.IsNotNull(wrapper);
         Assert.IsNotNull(wrapper.Content);
         Assert.That(wrapper.Code, Is.EqualTo((int)HttpStatusCode.OK));
         Assert.IsNull(wrapper.Message);
         Assert.That(wrapper.Id, Is.EqualTo("463fadea-066e-4950-a733-5bc789a9ea94"));
     }
-    
+
     [Test]
     [TestCase(@"{
     ""id"": ""463fadea-066e-4950-a733-5bc789a9ea94"",
@@ -168,12 +180,11 @@ public class ResultWrapperGenericTest
     public void WrapperGeneric_MustBe_Deserializable(string rawData)
     {
         var wrapper = JsonSerializer.Deserialize<Wrapper<object>>(rawData);
-        
+
         Assert.IsNotNull(wrapper);
         Assert.IsNotNull(wrapper.Content);
         Assert.That(wrapper.Code, Is.EqualTo((int)HttpStatusCode.OK));
         Assert.IsNull(wrapper.Message);
         Assert.That(wrapper.Id, Is.EqualTo("463fadea-066e-4950-a733-5bc789a9ea94"));
     }
-    
 }
