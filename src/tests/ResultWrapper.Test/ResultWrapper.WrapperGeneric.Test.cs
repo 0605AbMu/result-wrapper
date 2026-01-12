@@ -69,7 +69,7 @@ public class ResultWrapperGenericTest
     {
         Wrapper<string> wrapper = "test";
 
-        Assert.IsInstanceOf<IWrapper<string>>(wrapper);
+        Assert.IsInstanceOf<Wrapper<string>>(wrapper);
     }
 
     [Test]

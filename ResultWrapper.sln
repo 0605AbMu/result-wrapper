@@ -5,6 +5,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{329417B5-F3AE-4338-9C63-C9244893F0B6}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		.github\workflows\pack.yml = .github\workflows\pack.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DEA46995-908F-4867-9125-CA4FAC57E210}"
