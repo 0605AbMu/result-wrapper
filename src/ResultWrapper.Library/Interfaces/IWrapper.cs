@@ -1,29 +1,29 @@
-using System.Net;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using ModelError = ResultWrapper.Library.Common.ModelError;
-
 namespace ResultWrapper.Library.Interfaces;
 
 /// <summary>
-/// A generic interface that wrapper implements its properties
+/// Defines the contract for a response wrapper that standardises API output.
 /// </summary>
-/// <typeparam name="T">The Type of Result</typeparam>
+/// <typeparam name="T">The type of the response payload.</typeparam>
 public interface IWrapper<T>
 {
     /// <summary>
-    /// Result id that is auto generated
+    /// Auto-generated request identifier. Defaults to <see cref="System.Diagnostics.Activity.Current"/>.Id when
+    /// a tracing activity is active, otherwise a new <see cref="System.Guid"/>.
     /// </summary>
-    public string Id { get; set; }
+    string Id { get; set; }
 
     /// <summary>
-    /// Response result code
+    /// HTTP or custom status code for the response.
     /// </summary>
-    public int Code { get; protected internal set; }
+    int Code { get; set; }
 
     /// <summary>
-    /// Result data
+    /// Response payload.
     /// </summary>
     T? Content { get; init; }
 
-    public string? Message { get; set; }
+    /// <summary>
+    /// Optional human-readable message, typically describing an error.
+    /// </summary>
+    string? Message { get; set; }
 }

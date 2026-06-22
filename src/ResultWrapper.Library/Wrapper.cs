@@ -21,6 +21,13 @@ public partial class Wrapper : Wrapper<object?>
 
     public override Wrapper WithCode(HttpStatusCode code) => this.WithCode((int)code);
 
+    /// <inheritdoc/>
+    public override Wrapper WithMessage(string? message)
+    {
+        this.Message = message;
+        return this;
+    }
+
     #endregion
 
     #region From Exception
@@ -94,6 +101,9 @@ public partial class Wrapper : Wrapper<object?>
 
     public new static Wrapper FromSuccess(object content, HttpStatusCode code) =>
         FromSuccess(content, (int)code);
+
+    public new static Wrapper FromSuccessOrNotFound(object? content)
+        => content is null ? FromStatus(HttpStatusCode.NotFound) : FromSuccess(content);
 
     #endregion
 
