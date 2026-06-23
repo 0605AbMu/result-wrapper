@@ -20,11 +20,6 @@ jobs:
           dotnet-version: 9.0.x
       - name: Build
         run: dotnet build src/ResultWrapper.Library/ResultWrapper.Library.csproj -c Release
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: src/ResultWrapper.Library/bin/Release/
 
   Test:
     runs-on: ubuntu-latest
@@ -45,15 +40,8 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: src/ResultWrapper.Library/bin/Release/
-      - name: Restore
-        run: dotnet restore src/ResultWrapper.Library/ResultWrapper.Library.csproj
       - name: Pack
-        run: dotnet pack src/ResultWrapper.Library/ResultWrapper.Library.csproj -c Release -p:PackageVersion=${{ github.ref_name }} --no-build
+        run: dotnet pack src/ResultWrapper.Library/ResultWrapper.Library.csproj -c Release -p:PackageVersion=${{ github.ref_name }}
       - name: Publish to NuGet
         run: dotnet nuget push src/ResultWrapper.Library/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: Create GitHub Release
