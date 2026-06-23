@@ -50,6 +50,8 @@ jobs:
         with:
           name: build-output
           path: src/ResultWrapper.Library/bin/Release/
+      - name: Restore
+        run: dotnet restore src/ResultWrapper.Library/ResultWrapper.Library.csproj
       - name: Pack
         run: dotnet pack src/ResultWrapper.Library/ResultWrapper.Library.csproj -c Release -p:PackageVersion=${{ github.ref_name }} --no-build
       - name: Publish to NuGet
